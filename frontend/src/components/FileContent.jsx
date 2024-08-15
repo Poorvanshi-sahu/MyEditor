@@ -1,52 +1,57 @@
 import React, { useEffect, useState } from "react";
 import { useFileContext } from "../FileContext";
 import axios from "axios";
+import { toast } from 'sonner';
 
 const FileContent = () => {
   const { openFile } = useFileContext();
+  const [fileTypedData, setFileTypedData] = useState("");
 
-  const [fileData, setFileData] = useState({
-    fileName: openFile,
-    fileContent: "",
-  });
-
-  const setData = async () => {
-    const response = await axios.post("/api/updateFile", { fileData });
-    return response;
+  const fileDataHandler = (event) => {
+    const val = event.target.value;
+    setFileTypedData(val);
   };
-
-  const fileDataHandler = (e) => {
-    const { name, value } = e.target;
-
-    setFileData((prevState) => ({
-      ...prevState,
-      [name]: value,
-      fileName: openFile,
-    }));
-
-    let interval;
-    (function(){
-      clearTimeout(interval)
-      interval = setTimeout(()=>{
-        setData();
-      }, 500)
-    })()
-  };
-
 
   useEffect(() => {
     if (openFile) {
       const readFile = async () => {
         const response = await axios.get(`/api/readFile/${openFile}`);
-        setFileData({
-          ["openFile"]:openFile,
-          ["fileContent"]:response.data.data
-        })
-        return 
+        setFileTypedData(response.data.data);
       };
       readFile();
     }
-  }, [fileData.fileContent, openFile]);
+  }, [openFile]);
+
+
+  const saveFile = async (event) => {
+    if (event.ctrlKey && event.key === "s") {
+      event.preventDefault();
+      try {
+        const response = await axios.post("/api/updateFile", {
+          fileName: openFile,
+          fileContent: fileTypedData,
+        });
+        
+        
+        toast.success(response.data.message, {
+          cancel: {
+            label: 'Close',
+            onClick: () => console.log('x'),
+          },
+          position:'top-center'
+        });
+  
+      } catch (error) {
+        toast.error(error.message, {
+          cancel: {
+            label: 'Close',
+            onClick: () => console.log('x'),
+          },
+          position:'top-center'
+        });
+      }
+    }
+  };
 
   return (
     <div className="w-full text-gray-300 relative">
@@ -57,9 +62,11 @@ const FileContent = () => {
         name="fileContent"
         className="absolute top-0 h-full w-full resize-none bg-gray-800 outline-none px-2 pt-10 py-3 z-10 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-300"
         onChange={fileDataHandler}
-        value={!openFile ? "No file Selected" : fileData.fileContent}
+        value={!openFile ? "No file selected" : fileTypedData}
         disabled={!openFile}
+        onKeyDown={saveFile}
       ></textarea>
+      
     </div>
   );
 };

@@ -12,7 +12,6 @@ const FileStructure = ({ expanded }) => {
  const fetchData = async function(){
    const {data} = await axios.get("/api/getFiles")
    setAllFiles(data.files)
-   
 }
 
   useEffect(()=>{
@@ -28,13 +27,6 @@ const FileStructure = ({ expanded }) => {
     setCreateFolder(!createFolder);
     setCreateFile(false);
   };
-
-  // const truncate = (text) => {
-  //   if (text.length > 10) {
-  //     return text.slice(0, 10) + "...";
-  //   }
-  //   return text;
-  // };
 
   const type = (file) => {
     if (file.indexOf(".")>0) {
@@ -78,10 +70,7 @@ const FileStructure = ({ expanded }) => {
     deleteFile()
   }
 
-  
-
   return (
-   
     <div
       className={`slider overflow-y-scroll ${
         expanded
@@ -94,10 +83,10 @@ const FileStructure = ({ expanded }) => {
           className="ri-file-add-line text-gray-400 cursor-pointer"
           onClick={() => createFileHandler()}
         ></i>
-        <i
+        {/* <i
           className="ri-folder-add-line  text-gray-400 cursor-pointer"
           onClick={() => createFolderHandler()}
-        ></i>
+        ></i> */}
       </div>
       {createFile ? (
         <input
@@ -134,7 +123,7 @@ const FileStructure = ({ expanded }) => {
                 className={`ri-${
                   type(file)
                     ? "file-text-line text-blue-700"
-                    : "folder-line text-yellow-600"
+                    : "file-text-line text-gray-600"
                 } mr-1`}
               ></i>
             }
@@ -148,7 +137,6 @@ const FileStructure = ({ expanded }) => {
       }
       </div>
     </div>
-    
   );
 };
 

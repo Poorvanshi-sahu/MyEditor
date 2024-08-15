@@ -3,8 +3,6 @@ const router = express.Router();
 const fs = require("fs");
 
 router.get("/getFiles", (req, res) => {
-  console.log(__dirname);
-
   fs.readdir(`./files`, (err, files) => {
     if (err) {
       return res.status(400).json({ Error: err.message });
@@ -30,7 +28,6 @@ router.get("/readFile/:filename", (req, res) => {
         if (err) {
           return res.status(400).json({ Error: err.message });
         }
-        console.log(data);
         return res.status(200).json({ data });
       });
     } else {
@@ -89,10 +86,10 @@ router.post("/createFile",(req,res)=>{
 
 router.post("/updateFile",(req,res)=>{
    const {fileName, fileContent} = req.body;
-
-   fs.appendFile(`./files/${fileName}`,fileContent, (err)=>{
+  
+   fs.writeFile(`./files/${fileName}`,fileContent, (err)=>{
       if(err){
-        return res.status(400).json({"message":"File not found"})
+        return res.status(400).json(err.message)
       }
        return res.status(200).json({"message":"File updated successfully"})
    })
