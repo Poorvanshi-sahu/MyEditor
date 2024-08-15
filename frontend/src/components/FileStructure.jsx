@@ -29,12 +29,12 @@ const FileStructure = ({ expanded }) => {
     setCreateFile(false);
   };
 
-  const truncate = (text) => {
-    if (text.length > 12) {
-      return text.slice(0, 15) + "...";
-    }
-    return text;
-  };
+  // const truncate = (text) => {
+  //   if (text.length > 10) {
+  //     return text.slice(0, 10) + "...";
+  //   }
+  //   return text;
+  // };
 
   const type = (file) => {
     if (file.indexOf(".")>0) {
@@ -127,8 +127,8 @@ const FileStructure = ({ expanded }) => {
       <div className="">
       {
         allFiles.length>0 ? allFiles.map((file, index)=>{
-          return <div className="flex justify-between mt-1 rounded-sm text-gray-300 font-sans px-1" key={index}>
-          <div className="cursor-pointer w-full hover:text-gray-500" onClick={()=>openFileHandler(file)}>
+          return <div className="flex justify-between mt-1 rounded-sm text-gray-300 font-sans px-1 gap-2" key={index}>
+          <div className="cursor-pointer w-full hover:text-gray-500 overflow-hidden" onClick={()=>openFileHandler(file)}>
             {
               <i
                 className={`ri-${
@@ -138,7 +138,7 @@ const FileStructure = ({ expanded }) => {
                 } mr-1`}
               ></i>
             }
-            {truncate(file)}
+            {file}
           </div>
           <div>
             <i className="ri-delete-bin-line text-red-500 cursor-pointer" onClick={()=>deleteHandler(file)}></i>
